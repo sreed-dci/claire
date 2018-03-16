@@ -152,6 +152,10 @@ Request.prototype.ServedFromBrowserCache = function () {
   return this.details.fromCache;
 };
 
+Request.prototype.servedFromCloudflareCache = function () {
+  return 'CF-CACHE-STATUS' in this.headers && this.headers['CF-CACHE-STATUS'] == 'HIT';
+};
+
   // RAY ID header format: CF-RAY:f694c6892660106-DFW
 Request.prototype.getRayID = function () {
   let ray = this.headers['CF-RAY'];
@@ -236,7 +240,7 @@ Request.prototype.getImagePath = function (basePath) {
     iconPathParts.push('h2');
   }
 
-  if (this.isv6IP()) {
+  if (this.servedFromCloudflareCache()) {
     iconPathParts.push('ipv6');
   }
 
